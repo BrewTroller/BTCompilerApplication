@@ -1,5 +1,8 @@
 # BrewTroller Cloud Compiler Container
 
+[![Build Status](https://travis-ci.org/BrewTroller/BTCompilerApplication.svg?branch=master)](https://travis-ci.org/BrewTroller/BTCompilerApplication)
+[![Docker Build Status](https://img.shields.io/docker/build/brewtroller/btccs.svg)](https://hub.docker.com/r/brewtroller/btccs/)
+
 A dockerized version of the BrewTroller Cloud Compiler Service.
 
 ### Build the container
@@ -37,3 +40,28 @@ Setup:
 
 3. Point your copy of BrewTroller Update at your local BTCCS container. At this time the easiest way to accompilish this is to add an entry for build.brewtroller.net to your machine's hosts file, pointing to 127.0.0.1
 4. Modify the local copy of the BrewTroller source code as required, commiting your changes locally. Any commits that you wish to make available to the BTCCS container need to be tagged with the format `vX.X.X` where X is any integer number.
+
+### Using the container for local manual building
+
+The container contains everything that is necessary to compile the BrewTroller firmware. Optionally, it can be used to compile the firmware locally, without using BrewTroller Update, and without installing all of the dependancies directly onto your local machine.
+
+1. Start a container, with the directory of your local BrewTroller firmware code mounted inside the container:
+
+```bash
+$ docker run -it -v <absolute path to local brewtroller clone>:/localbt \
+--entrypoint /bin/sh brewtroller/btccs:latest
+```
+
+2. From here, you can compile the firmware as you normally would, for example: 
+
+```bash
+$ cd /localbt
+$ mkdir build
+$ cd build
+$ cmake -Dboard=BT_PHOENIX_SINGLE_VESSEL ../
+$ make
+```
+
+3. If you compiled the firmware in the build directory, like in the example in step 2, the build products will be available in the build sub-directory of your local clone of the BrewTroller Firmware.
+
+4. Once you are done, you can remove the the cloud compiler container from your system using the command: `docker rm -f $(docker ps -a -q -f "ancestor=brewtroller/btccs:latest")`
