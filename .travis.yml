@@ -1,3 +1,8 @@
+sudo: required
+
+services:
+  - docker
+
 env:
   global:
   - secure: Rkl7FTwbnKMwcl6rFaQecbtFnHUKofKqwcpZefJ2gB8ioxehvk4fM7Bk1rkyIucMn0PrfwpYRxuCBGjorcbpe/GVFwyBeAi6yRIt3uiN+y5GIaULJin1rPGuBdfs2/sFQZnLlvmGavuMdOX9MpQBSs3zVpXFHKlx/jVcuW4teQ3ItDrsPSvH9hOlYwXtRp8OZJ7CLdgGz1DPGL86gMEwNifCCMcd/a9bRn8DSc2UCz0CnIyA47usUFq+AYP+gl8kji/nDXIcpbibLv2vpiBZRdP837LWxrAiqdyN6xqncg1KJIN0gp5KO9Z6RyL0XtBVJ1fuFLnT//og9bBCecTWOfw0mmk8GH/FG8S2Nqv+0SbgbOC6FL3ZlWAOOM0iCgKaXq25byJwavTtQrtqD9gVVV5XsJ8UZ3zb4tUl2ZZLot3FwKGOt0l2kUDOGkqRoTEddtEuUFDXI/j9AgQZCHM5KVxe0cjBmQvUoI6qd2oGFCBdUXllV6RQ3CABXYJc2CqJx6M5094cY5san4nmUHH00yQbjbxAFli5FodwqotijgmO6TFro8QncZSc6TPYm2hNlb8/d+NO1ok3Uhf5tHktm2+GTsCY06VH0HnmQz+QpDnmHDU6beVeIFPEbENVdpa8E1J6gadlfpLPA6f9NOF7V2WU+pnbKDhXHzaGG1vt58Q=
@@ -12,8 +17,4 @@ script:
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - if [[ $TRAVIS_PULL_REQUEST == "false" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then
-    docker tag $REPO:$TAG $REPO:$TRAVIS_BUILD_NUMBER;
-    docker push $REPO:$TRAVIS_BUILD_NUMBER;
-    fi 
- - docker push $REPO:$TAG
+  - ./push-to-docker.sh
